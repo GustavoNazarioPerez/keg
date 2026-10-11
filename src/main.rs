@@ -1,9 +1,7 @@
 mod cli;
+mod commands;
 use std::env;
 use std::process::ExitCode;
-
-// TODO: use Command enum after the first command is implemented
-const SUPPORTED_COMMANDS: &[&str] = &[];
 
 fn main() -> ExitCode {
     let args: Vec<String> = env::args().collect();
@@ -19,11 +17,14 @@ fn main() -> ExitCode {
         return ExitCode::SUCCESS;
     }
 
-    if !SUPPORTED_COMMANDS.contains(&command) {
-        eprintln!("error: invalid command `{command}`");
-        eprintln!("{}", cli::USAGE);
-        eprintln!("For more information, try `--help`.");
-        return ExitCode::from(2);
+    match command.parse::<commands::Command>() {
+        Ok(_) => eprintln!("unimplemented"),
+        Err(e) => {
+            eprintln!("{e}");
+            eprintln!("{}", cli::USAGE);
+            eprintln!("For more information, try `--help`.");
+            return ExitCode::from(2);
+        }
     }
 
     ExitCode::SUCCESS
