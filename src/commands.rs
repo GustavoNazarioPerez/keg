@@ -1,43 +1,72 @@
+mod bench;
+mod compact;
+mod count;
+mod delete;
+mod get;
+mod scan;
+mod set;
+mod stats;
+
 use std::fmt;
-use std::str::FromStr;
 
 #[derive(Debug)]
-pub struct InvalidCommandError(pub String);
+pub enum ParseError {
+    InvalidCommand(String),
+    MissingArgument(&'static str),
+    UnexpectedArgument(String),
+}
 
-impl std::error::Error for InvalidCommandError {}
-
-impl fmt::Display for InvalidCommandError {
+impl fmt::Display for ParseError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let command = &self.0;
-        write!(f, "error: invalid command {command}")
+        match self {
+            ParseError::InvalidCommand(c) => write!(f, "error: invalid command {c}"),
+            ParseError::MissingArgument(a) => write!(f, "error: missing argument <{a}>"),
+            ParseError::UnexpectedArgument(a) => write!(f, "error: unexpected argument {a}"),
+        }
     }
 }
 
+impl std::error::Error for ParseError {}
+
 pub enum Command {
-    Set,
-    Get,
-    Delete,
-    Scan,
-    Count,
-    Stats,
-    Compact,
-    Bench,
+    Set(set::Set),
+    Get(get::Get),
+    Delete(delete::Delete),
+    Scan(scan::Scan),
+    Count(count::Count),
+    Stats(stats::Stats),
+    Compact(compact::Compact),
+    Bench(bench::Bench),
 }
 
-impl FromStr for Command {
-    type Err = InvalidCommandError;
+impl Command {
+    pub fn from_args(
+        command: &str,
+        mut args: impl Iterator<Item = String>,
+    ) -> Result<Command, ParseError> {
+        match command {
+            "set" => Ok(Command::Set(set::Set::from_args(&mut args)?)),
+            "get" => Ok(Command::Get(get::Get::from_args(&mut args)?)),
+            "delete" => Ok(Command::Delete(delete::Delete::from_args(&mut args)?)),
+            "scan" => Ok(Command::Scan(scan::Scan::from_args(&mut args)?)),
+            "count" => Ok(Command::Count(count::Count::from_args(&mut args)?)),
+            "stats" => Ok(Command::Stats(stats::Stats::from_args(&mut args)?)),
+            "compact" => Ok(Command::Compact(compact::Compact::from_args(&mut args)?)),
+            "bench" => Ok(Command::Bench(bench::Bench::from_args(&mut args)?)),
+            _ => Err(ParseError::InvalidCommand(String::from(command))),
+        }
+    }
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "set" => Ok(Command::Set),
-            "get" => Ok(Command::Get),
-            "delete" => Ok(Command::Delete),
-            "scan" => Ok(Command::Scan),
-            "count" => Ok(Command::Count),
-            "stats" => Ok(Command::Stats),
-            "compact" => Ok(Command::Compact),
-            "bench" => Ok(Command::Bench),
-            _ => Err(InvalidCommandError(String::from(s))),
+    pub fn run(&self) {
+        match self {
+            Command::Set(cmd) => cmd.run(),
+            Command::Get(cmd) => cmd.run(),
+            Command::Delete(cmd) => cmd.run(),
+            Command::Scan(cmd) => cmd.run(),
+            Command::Count(cmd) => cmd.run(),
+            Command::Stats(cmd) => cmd.run(),
+            Command::Compact(cmd) => cmd.run(),
+            Command::Bench(cmd) => cmd.run(),
         }
     }
 }
