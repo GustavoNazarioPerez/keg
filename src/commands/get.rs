@@ -1,11 +1,12 @@
 use crate::commands::ParseError;
+use crate::store::Store;
 
 pub struct Get {
     key: String,
 }
 
 impl Get {
-    pub fn run(&self) {
+    pub fn run(&self, _store: &mut Store) {
         println!("get {}", self.key);
     }
 

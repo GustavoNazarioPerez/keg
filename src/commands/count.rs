@@ -1,9 +1,10 @@
 use crate::commands::ParseError;
+use crate::store::Store;
 
 pub struct Count;
 
 impl Count {
-    pub fn run(&self) {
+    pub fn run(&self, _store: &mut Store) {
         println!("count");
     }
 

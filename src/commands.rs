@@ -7,6 +7,7 @@ mod scan;
 mod set;
 mod stats;
 
+use crate::store::Store;
 use std::fmt;
 
 #[derive(Debug)]
@@ -57,16 +58,16 @@ impl Command {
         }
     }
 
-    pub fn run(&self) {
+    pub fn run(&self, store: &mut Store) {
         match self {
-            Command::Set(cmd) => cmd.run(),
-            Command::Get(cmd) => cmd.run(),
-            Command::Delete(cmd) => cmd.run(),
-            Command::Scan(cmd) => cmd.run(),
-            Command::Count(cmd) => cmd.run(),
-            Command::Stats(cmd) => cmd.run(),
-            Command::Compact(cmd) => cmd.run(),
-            Command::Bench(cmd) => cmd.run(),
+            Command::Set(cmd) => cmd.run(store),
+            Command::Get(cmd) => cmd.run(store),
+            Command::Delete(cmd) => cmd.run(store),
+            Command::Scan(cmd) => cmd.run(store),
+            Command::Count(cmd) => cmd.run(store),
+            Command::Stats(cmd) => cmd.run(store),
+            Command::Compact(cmd) => cmd.run(store),
+            Command::Bench(cmd) => cmd.run(store),
         }
     }
 }

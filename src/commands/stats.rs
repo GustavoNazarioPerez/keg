@@ -1,9 +1,10 @@
 use crate::commands::ParseError;
+use crate::store::Store;
 
 pub struct Stats;
 
 impl Stats {
-    pub fn run(&self) {
+    pub fn run(&self, _store: &mut Store) {
         println!("stats");
     }
 

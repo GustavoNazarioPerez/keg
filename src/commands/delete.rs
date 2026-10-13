@@ -1,11 +1,12 @@
 use crate::commands::ParseError;
+use crate::store::Store;
 
 pub struct Delete {
     key: String,
 }
 
 impl Delete {
-    pub fn run(&self) {
+    pub fn run(&self, _store: &mut Store) {
         println!("delete {}", self.key);
     }
 

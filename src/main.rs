@@ -1,5 +1,6 @@
 mod cli;
 mod commands;
+mod store;
 use std::env;
 use std::process::ExitCode;
 
@@ -17,8 +18,9 @@ fn main() -> ExitCode {
         return ExitCode::SUCCESS;
     }
 
+    let mut store = store::Store::default();
     match commands::Command::from_args(&command, &mut args) {
-        Ok(cmd) => cmd.run(),
+        Ok(cmd) => cmd.run(&mut store),
         Err(e) => {
             eprintln!("{e}");
             eprintln!("{}", cli::USAGE);

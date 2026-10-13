@@ -1,4 +1,5 @@
 use crate::commands::ParseError;
+use crate::store::Store;
 
 pub struct Set {
     key: String,
@@ -6,7 +7,7 @@ pub struct Set {
 }
 
 impl Set {
-    pub fn run(&self) {
+    pub fn run(&self, _store: &mut Store) {
         println!("set {} = {}", self.key, self.value);
     }
 
@@ -16,6 +17,9 @@ impl Set {
         if value.is_empty() {
             return Err(ParseError::MissingArgument("value"));
         }
-        Ok(Set { key, value: value.join(" ") })
+        Ok(Set {
+            key,
+            value: value.join(" "),
+        })
     }
 }

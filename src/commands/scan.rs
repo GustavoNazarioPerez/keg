@@ -1,11 +1,12 @@
 use crate::commands::ParseError;
+use crate::store::Store;
 
 pub struct Scan {
     prefix: Option<String>,
 }
 
 impl Scan {
-    pub fn run(&self) {
+    pub fn run(&self, _store: &mut Store) {
         match &self.prefix {
             Some(prefix) => println!("scan {prefix}"),
             None => println!("scan"),
